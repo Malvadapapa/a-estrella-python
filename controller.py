@@ -1,3 +1,4 @@
+import time
 from model import GrafoCalles, a_estrella
 
 class Controlador:
@@ -77,7 +78,12 @@ class Controlador:
         
         :return: No retorna nada.
         """
-        camino, self.costo_g, self.costo_f = a_estrella(self.grafo, self.inicio, self.meta)
+        def callback(conjunto_cerrado, costo_g, costo_f):
+            self.vista.dibujar_grafo(self.grafo, self.inicio, self.meta, self.camino_actual, costo_g, costo_f)
+            self.vista.maestro.update()
+            time.sleep(0.1)  # Introduce un retraso de 100 ms
+
+        camino, self.costo_g, self.costo_f = a_estrella(self.grafo, self.inicio, self.meta, callback)
         if camino:
             self.camino_actual = camino
             self.vista.actualizar_resultados(f"Ruta encontrada. Longitud: {len(camino) - 1}")

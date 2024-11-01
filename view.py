@@ -13,7 +13,7 @@ class InterfazPathfinding:
         """
         self.maestro = maestro
         self.controlador = controlador
-        self.maestro.title("Pathfinding A* con Visualización de Costos")
+        self.maestro.title("Aplicacion Algoritmo A* para encontrar la ruta mas corta")
         self.maestro.geometry("1000x800")
 
         self.tamaño_celda = 20
@@ -66,8 +66,8 @@ class InterfazPathfinding:
         ttk.Label(self.marco_leyenda, text="Verde: Inicio").grid(row=1, column=0, sticky=tk.W)
         ttk.Label(self.marco_leyenda, text="Rojo: Fin").grid(row=2, column=0, sticky=tk.W)
         ttk.Label(self.marco_leyenda, text="Verde claro: Ruta encontrada").grid(row=3, column=0, sticky=tk.W)
-        ttk.Label(self.marco_leyenda, text="Tonos cálidos: Mayor costo").grid(row=4, column=0, sticky=tk.W)
-        ttk.Label(self.marco_leyenda, text="Tonos fríos: Menor costo").grid(row=5, column=0, sticky=tk.W)
+        ttk.Label(self.marco_leyenda, text="Tonos cálidos: Mientras mas calido representan mas costo").grid(row=4, column=0, sticky=tk.W)
+        ttk.Label(self.marco_leyenda, text="Tonos fríos: Mientras mas frio representan menor costo").grid(row=5, column=0, sticky=tk.W)
         ttk.Label(self.marco_leyenda, text="g: Costo desde inicio").grid(row=6, column=0, sticky=tk.W)
         ttk.Label(self.marco_leyenda, text="f: Costo estimado total").grid(row=7, column=0, sticky=tk.W)
 

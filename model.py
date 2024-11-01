@@ -43,13 +43,14 @@ def heuristica(a, b):
     """
     return max(abs(b[0] - a[0]), abs(b[1] - a[1]))
 
-def a_estrella(grafo, inicio, meta):
+def a_estrella(grafo, inicio, meta, callback=None):
     """
     Implementación del algoritmo A*.
     
     :param grafo: Instancia de GrafoCalles.
     :param inicio: Tupla con las coordenadas del punto de inicio.
     :param meta: Tupla con las coordenadas del punto de destino.
+    :param callback: Función a llamar en cada iteración para actualizar la vista.
     :return: Tupla con el camino encontrado (lista de coordenadas), costo_g y costo_f.
     """
     vecinos = [(0, inicio)]
@@ -83,5 +84,8 @@ def a_estrella(grafo, inicio, meta):
                 costo_g[vecino] = costo_g_tentativo
                 costo_f[vecino] = costo_g[vecino] + heuristica(vecino, meta)
                 heapq.heappush(vecinos, (costo_f[vecino], vecino))
+
+        if callback:
+            callback(conjunto_cerrado, costo_g, costo_f)
 
     return None, costo_g, costo_f
