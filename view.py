@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import ttk
+from tkinter import ttk, Text, Scrollbar
 import colorsys
 
 class InterfazPathfinding:
@@ -57,19 +57,48 @@ class InterfazPathfinding:
         self.canvas.grid(row=0, column=0, sticky=(tk.W, tk.E, tk.N, tk.S))
         self.canvas.bind("<Button-1>", self.controlador.al_hacer_clic_canvas)
 
-        # Marco para la leyenda
-        self.marco_leyenda = ttk.Frame(self.marco_canvas_leyenda, padding="10")
-        self.marco_leyenda.grid(row=0, column=1, sticky=(tk.N, tk.S, tk.E))
+        # Marco para la leyenda y listas
+        self.marco_leyenda_listas = ttk.Frame(self.marco_canvas_leyenda, padding="10")
+        self.marco_leyenda_listas.grid(row=0, column=1, sticky=(tk.N, tk.S, tk.E))
 
         # Leyenda
-        ttk.Label(self.marco_leyenda, text="Leyenda:", font=("Arial", 12, "bold")).grid(row=0, column=0, sticky=tk.W)
-        ttk.Label(self.marco_leyenda, text="Verde: Inicio").grid(row=1, column=0, sticky=tk.W)
-        ttk.Label(self.marco_leyenda, text="Rojo: Fin").grid(row=2, column=0, sticky=tk.W)
-        ttk.Label(self.marco_leyenda, text="Verde claro: Ruta encontrada").grid(row=3, column=0, sticky=tk.W)
-        ttk.Label(self.marco_leyenda, text="Tonos cálidos: Mientras mas calido representan mas costo").grid(row=4, column=0, sticky=tk.W)
-        ttk.Label(self.marco_leyenda, text="Tonos fríos: Mientras mas frio representan menor costo").grid(row=5, column=0, sticky=tk.W)
-        ttk.Label(self.marco_leyenda, text="g: Costo desde inicio").grid(row=6, column=0, sticky=tk.W)
-        ttk.Label(self.marco_leyenda, text="f: Costo estimado total").grid(row=7, column=0, sticky=tk.W)
+        ttk.Label(self.marco_leyenda_listas, text="Leyenda:", font=("Arial", 12, "bold")).grid(row=0, column=0, sticky=tk.W)
+        ttk.Label(self.marco_leyenda_listas, text="Verde: Inicio").grid(row=1, column=0, sticky=tk.W)
+        ttk.Label(self.marco_leyenda_listas, text="Rojo: Fin").grid(row=2, column=0, sticky=tk.W)
+        ttk.Label(self.marco_leyenda_listas, text="Recuadro Azul: Ruta mas corta encontrada").grid(row=3, column=0, sticky=tk.W)
+        ttk.Label(self.marco_leyenda_listas, text="Tonos cálidos: Mientras mas calido representan mas costo").grid(row=4, column=0, sticky=tk.W)
+        ttk.Label(self.marco_leyenda_listas, text="Tonos fríos: Mientras mas frio representan menor costo").grid(row=5, column=0, sticky=tk.W)
+        ttk.Label(self.marco_leyenda_listas, text="g: Costo desde inicio").grid(row=6, column=0, sticky=tk.W)
+        ttk.Label(self.marco_leyenda_listas, text="f: Costo estimado total").grid(row=7, column=0, sticky=tk.W)
+
+        # Listas abiertas y cerradas
+        ttk.Label(self.marco_leyenda_listas, text="Lista Abierta:", font=("Arial", 12, "bold")).grid(row=8, column=0, sticky=tk.W)
+        
+        # Crear un marco para la lista abierta con barra de desplazamiento
+        self.marco_lista_abierta = ttk.Frame(self.marco_leyenda_listas)
+        self.marco_lista_abierta.grid(row=9, column=0, sticky=(tk.W, tk.E, tk.N, tk.S))
+        
+        self.scrollbar_lista_abierta = Scrollbar(self.marco_lista_abierta)
+        self.scrollbar_lista_abierta.pack(side=tk.RIGHT, fill=tk.Y)
+        
+        self.texto_lista_abierta = Text(self.marco_lista_abierta, height=10, wrap=tk.WORD, yscrollcommand=self.scrollbar_lista_abierta.set)
+        self.texto_lista_abierta.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+        
+        self.scrollbar_lista_abierta.config(command=self.texto_lista_abierta.yview)
+
+        ttk.Label(self.marco_leyenda_listas, text="Lista Cerrada:", font=("Arial", 12, "bold")).grid(row=10, column=0, sticky=tk.W)
+        
+        # Crear un marco para la lista cerrada con barra de desplazamiento
+        self.marco_lista_cerrada = ttk.Frame(self.marco_leyenda_listas)
+        self.marco_lista_cerrada.grid(row=11, column=0, sticky=(tk.W, tk.E, tk.N, tk.S))
+        
+        self.scrollbar_lista_cerrada = Scrollbar(self.marco_lista_cerrada)
+        self.scrollbar_lista_cerrada.pack(side=tk.RIGHT, fill=tk.Y)
+        
+        self.texto_lista_cerrada = Text(self.marco_lista_cerrada, height=10, wrap=tk.WORD, yscrollcommand=self.scrollbar_lista_cerrada.set)
+        self.texto_lista_cerrada.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+        
+        self.scrollbar_lista_cerrada.config(command=self.texto_lista_cerrada.yview)
 
     def obtener_color(self, valor, valor_minimo, valor_maximo):
         """
@@ -198,3 +227,32 @@ class InterfazPathfinding:
         self.tamaño_celda = min(600 // tamaño, 30)
         tamaño_canvas = self.tamaño_celda * tamaño
         self.canvas.config(width=tamaño_canvas, height=tamaño_canvas)
+
+    def actualizar_listas(self, lista_abierta, lista_cerrada):
+        """
+        Actualiza las etiquetas de las listas abiertas y cerradas.
+        
+        :param lista_abierta: Lista de nodos en la lista abierta.
+        :param lista_cerrada: Lista de nodos en la lista cerrada.
+        :return: No retorna nada.
+        """
+        self.texto_lista_abierta.config(state=tk.NORMAL)
+        self.texto_lista_abierta.delete(1.0, tk.END)
+        self.texto_lista_abierta.insert(tk.END, str(lista_abierta))
+        self.texto_lista_abierta.config(state=tk.DISABLED)
+
+        self.texto_lista_cerrada.config(state=tk.NORMAL)
+        self.texto_lista_cerrada.delete(1.0, tk.END)
+        self.texto_lista_cerrada.insert(tk.END, str(lista_cerrada))
+        self.texto_lista_cerrada.config(state=tk.DISABLED)
+
+    def seleccionar_punto_final(self, punto):
+        """
+        Cambia el color del punto final seleccionado a azul.
+        
+        :param punto: Coordenadas del punto final seleccionado.
+        :return: No retorna nada.
+        """
+        self.canvas.create_rectangle(punto[0]*self.tamaño_celda, punto[1]*self.tamaño_celda, 
+                                     (punto[0]+1)*self.tamaño_celda, (punto[1]+1)*self.tamaño_celda, 
+                                     fill="blue", outline="gray")

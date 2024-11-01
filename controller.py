@@ -79,7 +79,10 @@ class Controlador:
         :return: No retorna nada.
         """
         def callback(conjunto_cerrado, costo_g, costo_f):
+            lista_abierta = [nodo for nodo in costo_f.keys() if nodo not in conjunto_cerrado]
+            lista_cerrada = list(conjunto_cerrado)
             self.vista.dibujar_grafo(self.grafo, self.inicio, self.meta, self.camino_actual, costo_g, costo_f)
+            self.vista.actualizar_listas(lista_abierta, lista_cerrada)
             self.vista.maestro.update()
             time.sleep(0.1)  # Introduce un retraso de 100 ms
 
